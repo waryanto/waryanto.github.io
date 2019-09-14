@@ -89,6 +89,6 @@ $(document).ready(function() {
 		case "ru":
 			gcwriter.init("Изменить тональность", "на полтона вверх", "на полтона вниз");
 		default:
-			gcwriter.init("<strong>Transpose</strong>", "<strong>+1</strong>", "<strong>-1</strong>");
+			gcwriter.init("<strong>Transpose</strong>", "<b>+1</b>", "<b>-1</b>");
 	}
 });
