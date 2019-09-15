@@ -88,6 +88,6 @@ $(document).ready(function() {
 	switch (lang) {
 		
 		default:
-			gcwriter.init("<strong>Transpose</strong>", "|Naik|", "|Turun|");
+			gcwriter.init("<strong>Ganti Kunci</strong>", "\u2BC5", "\u2BC6");
 	}
 });
