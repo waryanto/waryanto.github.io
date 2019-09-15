@@ -86,8 +86,7 @@ $(document).ready(function() {
 	var gcwriter = new guitar_chord_writer();
 	var lang = $("head script#html-chords-script").attr("lang");
 	switch (lang) {
-		case "ru":
-			gcwriter.init("Изменить тональность", "на полтона вверх", "на полтона вниз");
+		
 		default:
 			gcwriter.init("<strong>Transpose</strong>", "|Naik|", "|Turun|");
 	}
