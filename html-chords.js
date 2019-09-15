@@ -88,6 +88,6 @@ $(document).ready(function() {
 	switch (lang) {
 		
 		default:
-			gcwriter.init("<strong>Ganti Kunci</strong>", "|⯅|", "|⯆|");
+			gcwriter.init("<strong>Ganti Kunci</strong>", "+1", "-1");
 	}
 });
