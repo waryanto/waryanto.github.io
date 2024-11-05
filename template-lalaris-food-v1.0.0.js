@@ -1,3 +1,93 @@
+// Fungsi untuk inisialisasi peta Leaflet
+        function initMap() {
+            const map = L.map('map').setView([restoLat, restoLng], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '&#169; OpenStreetMap'
+            }).addTo(map);
+
+            const restoMarker = L.marker([restoLat, restoLng]).addTo(map).bindPopup("Resto").openPopup();
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+
+                    const userMarker = L.marker([userLat, userLng], { draggable: true }).addTo(map)
+                        .bindPopup("Lokasi Anda").openPopup();
+                    map.setView([userLat, userLng], 15);
+
+                    document.getElementById('latitude').value = userLat;
+                    document.getElementById('longitude').value = userLng;
+
+                    const distance = map.distance([userLat, userLng], [restoLat, restoLng]) / 1000;
+                    const shippingCost = calculateShippingCost(distance);
+                    document.getElementById('shipping-cost').value = `Rp${formatNumberWithDot(shippingCost)}`;
+                    updateTotalPayment(shippingCost);
+
+                    userMarker.on('move', function(e) {
+                        const newLat = e.latlng.lat.toFixed(6);
+                        const newLng = e.latlng.lng.toFixed(6);
+                        document.getElementById('latitude').value = newLat;
+                        document.getElementById('longitude').value = newLng;
+
+                        const newDistance = map.distance([newLat, newLng], [restoLat, restoLng]) / 1000;
+                        const newShippingCost = calculateShippingCost(newDistance);
+                        document.getElementById('shipping-cost').value = `Rp${formatNumberWithDot(newShippingCost)}`;
+                        updateTotalPayment(newShippingCost);
+                            });
+                        }, () => {
+                            alert('Gagal mendeteksi lokasi, silakan isi alamat secara manual.');
+                        });
+                    } else {
+                        alert('Geolocation tidak didukung oleh browser ini.');
+                    }
+                }
+
+
+                    document.getElementById('payment-method').addEventListener('change', function() {
+                    const latitude = parseFloat(document.getElementById('latitude').value);
+                    const longitude = parseFloat(document.getElementById('longitude').value);
+                    const purchaseType = document.getElementById('purchase-type').value;
+
+                    if (purchaseType === 'delivery' && !isNaN(latitude) && !isNaN(longitude)) {
+                        const distance = calculateDistance(latitude, longitude, restoLat, restoLng);
+                        const shippingCost = calculateShippingCost(distance);
+                        document.getElementById('shipping-cost').value = `Rp${formatNumberWithDot(shippingCost)}`;
+                        updateTotalPayment(shippingCost);
+                    }
+                });
+
+
+
+                // Panggil fungsi untuk load produk saat halaman dimuat
+                window.onload = function() {
+                loadProducts();
+                document.getElementById('customer-form-container').style.display = 'none';
+
+                // Tambahkan kode ini untuk inisialisasi tombol - dan +
+                document.querySelectorAll('.quantity-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = this.getAttribute('data-index');
+                        const action = this.getAttribute('data-action');
+                        const input = document.querySelector(`.quantity-input[data-index='${index}']`);
+                        let currentQuantity = parseInt(input.value);
+
+                        if (action === 'decrease' && currentQuantity > 1) {
+                            currentQuantity -= 1;
+                        } else if (action === 'increase') {
+                            currentQuantity += 1;
+                        }
+
+                        input.value = currentQuantity;
+                        cart[index].quantity = currentQuantity;
+
+                        updateCartPopup(); // Perbarui tampilan popup keranjang
+                        updateCartCount();  // Perbarui jumlah item di ikon keranjang
+                    });
+                });
+          }
+
 (function() {
             // Daftar blog yang diizinkan untuk menggunakan template ini
             const allowedBlogs = ["lalarisfood.blogspot.com", "fooddelivery.blogspot.com", "makanenak.blogspot.com"];
